@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Untuk Seseorang</title>
+  
+  <!-- Font dari Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #170a1f 0%, #09030d 45%, #07010a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .page-shell {
+      width: min(1120px, 100%);
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    /* --- TAMPILAN TERKUNCI (MISTERIUS) --- */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 2, 24, 0.96);
+      backdrop-filter: blur(16px);
+      z-index: 999;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .lock-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 30px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      max-width: 90%;
+      width: 350px;
+    }
+
+    .lock-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      color: #ff75a0;
+    }
+
+    .lock-box p {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    .lock-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ff75a0;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 25px;
+      color: #fff;
+      text-align: center;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    .lock-box button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      color: #fff;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .lock-box button:hover {
+      transform: scale(1.03);
+    }
+
+    .error-msg {
+      color: #ff4d4d;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* --- KONTEN UTAMA --- */
+    #main-content {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s ease, visibility 1s ease;
+      width: 100%;
+      min-height: calc(100vh - 48px);
+      display: grid;
+      place-items: center;
+      position: relative;
+      padding: 32px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 40px 40px 32px;
+      border-radius: 32px;
+      text-align: left;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      z-index: 10;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 45%);
+    }
+
+    .card h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2.6rem, 4vw, 3.6rem);
+      color: #ffd4e5;
+      margin-bottom: 18px;
+      text-shadow: 0 0 18px rgba(255, 129, 175, 0.4);
+    }
+
+    .card p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #e7e7e7;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: start;
+      margin-top: 16px;
+    }
+
+    .button-row a,
+    .button-row button {
+      border: none;
+      padding: 14px 24px;
+      border-radius: 28px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button-row a {
+      background: linear-gradient(135deg, #25d366, #10a86f);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(16, 168, 111, 0.22);
+    }
+
+    .button-row button {
+      background: linear-gradient(135deg, #ff6683, #ff4073);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(255, 64, 115, 0.24);
+    }
+
+    .button-row a:hover,
+    .button-row button:hover {
+      transform: translateY(-2px);
+      opacity: 0.98;
+    }
+
+    .button-row .love-button {
+      min-width: 140px;
+    }
+
+    /* --- ANIMASI FOTO MENGALIR KE ATAS --- */
+    .photo-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .floating-photo {
+      position: absolute;
+      bottom: -150px;
+      width: 100px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 3px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      animation: floatUpPhoto 12s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes floatUpPhoto {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(20deg);
+        opacity: 0;
+      }
+    }
+
+    /* --- EFEK LOVE (HATI) --- */
+    .heart-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      color: #ff4b2b;
+      font-size: 20px;
+      animation: floatHeart 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-105vh) scale(1.3) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 20px rgba(255, 117, 160, 0.2); }
+      100% { box-shadow: 0 0 40px rgba(255, 117, 160, 0.6); }
+    }
+
+    /* Dynamic classes untuk JavaScript */
+    .hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    .show {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    #transition-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: rgba(15, 5, 29, 0.7);
+      z-index: 998;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .transition-text h2 {
+      font-size: 2rem;
+      color: #ff75a0;
+      margin-bottom: 15px;
+      letter-spacing: 2px;
+    }
+
+    .transition-text p {
+      color: #f0f0f0;
+      font-size: 1rem;
+      margin-bottom: 0;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    #photo-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .photo-screen-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('c:\\Users\\HGP\\Downloads\\TYO FOTO.jpeg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.4) contrast(1.1);
+      animation: photoScreenZoom 12s ease-in-out infinite alternate;
+      z-index: 1;
+    }
+
+    .photo-screen-content {
+      position: relative;
+      z-index: 2;
+      color: #fff;
+      max-width: 700px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .photo-screen-tagline {
+      font-family: 'Dancing Script', cursive;
+      font-size: 4rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #ffccd5;
+      text-shadow: 0 0 30px rgba(255, 204, 213, 0.6);
+    }
+
+    .photo-screen-content p {
+      font-size: 1.1rem;
+      max-width: 520px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .photo-screen-content button {
+      border: none;
+      padding: 14px 28px;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255, 65, 108, 0.35);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .photo-screen-content button:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .page-action-button {
+      margin-top: 20px;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #ff75a0, #ff4b2b);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 117, 160, 0.3);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .page-action-button:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    @keyframes photoScreenZoom {
+      from {
+        transform: scale(1);
+      }
+      to {
+        transform: scale(1.12);
+      }
+    }
+
+    @keyframes transitionPhotoZoom {
+      from {
+        transform: scale(1);
+      }
+      to {
+        transform: scale(1.08);
+      }
+    }
+
+    .loader {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff75a0;
+      opacity: 0.3;
+      animation: pulseLoader 1s infinite ease-in-out;
+    }
+
+    .loader span:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .loader span:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes pulseLoader {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    .whatsapp-box {
+      margin-top: 28px;
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .whatsapp-box p {
+      color: #d7d7d7;
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .whatsapp-box textarea {
+      width: 100%;
+      min-height: 130px;
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      resize: vertical;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.06);
+    }
+
+    .whatsapp-box textarea:focus {
+      border-color: rgba(255, 117, 160, 0.55);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .whatsapp-box .whatsapp-button {
+      width: fit-content;
+      padding: 14px 26px;
+      background: linear-gradient(135deg, #25d366, #12a56a);
+      color: #fff;
+      border-radius: 28px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 16px 30px rgba(18, 165, 110, 0.2);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .whatsapp-box textarea:focus {
+      border-color: rgba(255, 117, 160, 0.7);
+      background: rgba(255,255,255,0.11);
+    }
+
+    .whatsapp-box .whatsapp-button {
+      width: fit-content;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #25d366, #10a86f);
+      color: #fff;
+      border-radius: 28px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 14px 28px rgba(16, 168, 111, 0.22);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .whatsapp-box .whatsapp-button:hover {
+      transform: translateY(-2px);
+      opacity: 0.98;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Musik Latar Belakang -->
+  <!-- Catatan: Bisa ganti URL lagu di atribut src -->
+  <audio id="bg-music" loop>
+    <source src="c:\Users\HGP\Downloads\Glenn Fredly - Kasih Putih.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Layar Misterius / Terkunci -->
+  <div id="lock-screen">
+    <div class="lock-box">
+      <h2>🔒 AREA RAHASIA</h2>
+      <p>Masukkan kata kunci rahasia untuk membuka pesan ini:</p>
+      <input type="password" id="pass-input" placeholder="Kata Kunci..." onkeypress="handleKeyPress(event)">
+      <button onclick="unlockContent()">BUKA</button>
+      <p class="error-msg" id="error-msg">Kata kunci salah! Coba lagi.</p>
+    </div>
+  </div>
+
+  <!-- Halaman Transisi -->
+  <div id="transition-screen" class="hidden">
+    <div class="transition-text">
+      <h2>Membuka Rahasia...</h2>
+      <p>Sabar sedikit. Pesan khusus sedang disiapkan untukmu, biar makin penasaran.</p>
+    </div>
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="page-shell">
+    <!-- Konten Utama -->
+    <div id="main-content">
+      
+      <!-- Wadah Animasi Foto -->
+      <div class="photo-container" id="photo-container"></div>
+
+      <!-- Wadah Efek Love -->
+      <div class="heart-container" id="heart-container"></div>
+
+      <!-- Card Teks Romantis -->
+      <div class="card">
+      <h1>Untuk Usi Tersayang ❤️</h1>
+      <p>
+        Di antara banyaknya wajah yang singgah,
+aku menemukanmu tanpa arah. Bukan karena dunia tak punya pilihan, tapi karena hatiku berhenti pada satu tujuan.
+Kamu datang bukan sekadar cerita, melainkan jawaban dari doa yang lama. Di matamu aku menemukan rumah, tempat lelahku akhirnya menyerah.
+Tak ada yang sepertimu di semesta ini, dengan caramu memahami dan mengerti.
+Kamu bukan hanya sekadar ada, kamu adalah alasan mengapa aku percaya.
+Dan jika waktu mencoba memisahkan,
+aku akan tetap menyebut namamu dalam harapan.
+Sebab dari sekian banyak kemungkinan yang ada,
+aku memilihmu karena kamu satu-satunya.<br><br>
+      </p>
+      <div class="whatsapp-box">
+        <p>Tulis balasanmu, lalu kirim ke WhatsApp:</p>
+        <textarea id="whatsapp-message" rows="4" placeholder="Tulis pesanmu di sini..."></textarea>
+        <a id="whatsapp-link" class="whatsapp-button" href="#" onclick="sendWhatsapp(event)" target="_blank" rel="noopener noreferrer">Kirim ke WhatsApp</a>
+      </div>
+      <div class="button-row">
+        <button class="love-button" onclick="sendLoveWhatsapp()">💖 Love</button>
+        <button class="page-action-button" onclick="showPhotoScreen()">Lihat Foto Usi & Gilang</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="photo-screen" class="hidden">
+    <div class="photo-screen-bg"></div>
+    <div class="photo-screen-content">
+      <div class="photo-screen-tagline">Usi & Gilang</div>
+      <p>"Aku selalu percaya kalau momen terbaik itu bukan momen yang diatur secara megah, tapi momen-momen kecil yang tercipta gitu aja. Kayak pas kita lagi jalan berdua, saling tatap, dan sadar kalau kita sama-sama mau berjuang. Gak perlu janji yang ketinggian, yang penting kita terus melangkah bareng, saling jaga, dan menikmati tiap prosesnya."</p>
+      <button onclick="backToMainContent()">Kembali ke Pesan</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // KUSTOMISASI KATA KUNCI DI SINI
+    // ==========================================
+    const KATA_KUNCI = "140925"; // Ubah dengan kata kunci yang kamu mau (huruf kecil semua)
+
+    // Daftar Gambar yang Akan Mengalir Ke Atas (Bisa diganti dengan link/file foto kamu sendiri)
+    const daftarFoto = [
+      'c:\\Users\\HGP\\Downloads\\TYO FOTO.jpeg',
+    ];
+
+    const transitionSteps = [
+      {
+        title: 'Membuka Rahasia...',
+        description: 'Sabar sedikit. Pesan khusus sedang disiapkan untukmu, biar makin penasaran.'
+      },
+      {
+        title: 'Memecahkan Kode...',
+        description: 'Beberapa kata manis sedang dirangkai untuk membuat hatimu tersenyum.'
+      },
+      {
+        title: 'Menyusun Cerita...',
+        description: 'Tunggu sebentar lagi… Aneh dan indah akan segera muncul.'
+      },
+      {
+        title: 'Hampir Selesai...',
+        description: 'Satu langkah lagi sebelum pesan rahasia ini terbuka.'
+      }
+    ];
+
+    let transitionIndex = 0;
+    let transitionTimeout;
+
+    function unlockContent() {
+      const input = document.getElementById('pass-input').value.trim().toLowerCase();
+      const errorMsg = document.getElementById('error-msg');
+      const lockScreen = document.getElementById('lock-screen');
+      const transitionScreen = document.getElementById('transition-screen');
+      const mainContent = document.getElementById('main-content');
+      const music = document.getElementById('bg-music');
+
+      if (input === KATA_KUNCI.toLowerCase()) {
+        errorMsg.style.display = 'none';
+        lockScreen.classList.add('hidden');
+        transitionScreen.classList.remove('hidden');
+        transitionIndex = 0;
+        updateTransitionScreen();
+
+        transitionTimeout = setTimeout(showNextTransitionStep, 2000);
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    function updateTransitionScreen() {
+      const titleEl = document.querySelector('#transition-screen h2');
+      const descEl = document.querySelector('#transition-screen p');
+      const step = transitionSteps[transitionIndex];
+      titleEl.textContent = step.title;
+      descEl.textContent = step.description;
+    }
+
+    function showNextTransitionStep() {
+      transitionIndex += 1;
+      if (transitionIndex < transitionSteps.length) {
+        updateTransitionScreen();
+        transitionTimeout = setTimeout(showNextTransitionStep, 2000);
+      } else {
+        const transitionScreen = document.getElementById('transition-screen');
+        const mainContent = document.getElementById('main-content');
+        const music = document.getElementById('bg-music');
+
+        transitionScreen.classList.add('hidden');
+        mainContent.classList.add('show');
+        music.play().catch(e => console.log("Autoplay diblokir browser: ", e));
+        mulaiEfekLove();
+        mulaiAnimasiFoto();
+      }
+    }
+
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        unlockContent();
+      }
+    }
+
+    function sendWhatsapp(event) {
+      event.preventDefault();
+      const message = document.getElementById('whatsapp-message').value.trim();
+      if (!message) {
+        alert('Silakan tulis pesan terlebih dahulu sebelum mengirim.');
+        return;
+      }
+      const phone = '6285603715597';
+      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message);
+      window.open(url, '_blank');
+    }
+
+    function showPhotoScreen() {
+      const mainContent = document.getElementById('main-content');
+      const photoScreen = document.getElementById('photo-screen');
+      mainContent.classList.add('hidden');
+      mainContent.classList.remove('show');
+      photoScreen.classList.remove('hidden');
+    }
+
+    function backToMainContent() {
+      const mainContent = document.getElementById('main-content');
+      const photoScreen = document.getElementById('photo-screen');
+      photoScreen.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+      mainContent.classList.add('show');
+    }
+
+    function sendLoveWhatsapp() {
+      const phone = '6285603715597';
+      const loveMessage = 'Hai sayang, aku mengirimkan love secara otomatis dari halaman ini. Semoga harimu selalu penuh kasih seperti lagu nya ❤️';
+      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(loveMessage);
+      window.open(url, '_blank');
+      showLoveToast();
+    }
+
+    function showLoveToast() {
+      const toast = document.createElement('div');
+      toast.textContent = 'Love sedang dikirim ke WhatsApp... 💌';
+      toast.style.position = 'fixed';
+      toast.style.bottom = '24px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.padding = '12px 24px';
+      toast.style.background = 'rgba(255, 20, 100, 0.95)';
+      toast.style.color = '#fff';
+      toast.style.borderRadius = '999px';
+      toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.25)';
+      toast.style.zIndex = 10000;
+      toast.style.fontFamily = 'Poppins, sans-serif';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // --- FUNGSI EFEK LOVE (HATI) MELAYANG ---
+    function mulaiEfekLove() {
+      const container = document.getElementById('heart-container');
+      
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        
+        // Simbol Love acak
+        const simbols = ['❤️', '💖', '💕', '💗', '💓'];
+        heart.innerText = simbols[Math.floor(Math.random() * simbols.length)];
+        
+        // Posisi & Ukuran Acak
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 3 + 3) + 's'; // Antara 3 - 6 detik
+        heart.style.fontSize = (Math.random() * 15 + 15) + 'px'; // Ukuran 15px - 30px
+        
+        container.appendChild(heart);
+
+        // Hapus elemen jika sudah selesai animasi
+        setTimeout(() => {
+          heart.remove();
+        }, 6000);
+      }, 300); // Muncul setiap 300ms
+    }
+
+    // --- FUNGSI ANIMASI FOTO MENGALIR KE ATAS ---
+    function mulaiAnimasiFoto() {
+      const container = document.getElementById('photo-container');
+
+      setInterval(() => {
+        const img = document.createElement('img');
+        img.classList.add('floating-photo');
+        
+        // Ambil gambar acak dari array
+        img.src = daftarFoto[Math.floor(Math.random() * daftarFoto.length)];
+        
+        // Posisi horizontal acak
+        img.style.left = Math.random() * 80 + 10 + 'vw'; // antara 10% sampai 90% lebar layar
+        img.style.animationDuration = (Math.random() * 4 + 8) + 's'; // 8 - 12 detik
+
+        container.appendChild(img);
+
+        // Hapus elemen foto setelah keluar layar
+        setTimeout(() => {
+          img.remove();
+        }, 12000);
+      }, 2500); // Foto baru muncul setiap 2.5 detik
+    }
+  </script>
+</body>
+</html>
