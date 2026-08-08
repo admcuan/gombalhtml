@@ -350,7 +350,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('c:\\Users\\HGP\\Downloads\\TYO FOTO.jpeg');
+      background-image: url('./images/TYO FOTO.jpeg');
       background-size: cover;
       background-position: center;
       filter: brightness(0.4) contrast(1.1);
@@ -548,7 +548,7 @@
   <!-- Musik Latar Belakang -->
   <!-- Catatan: Bisa ganti URL lagu di atribut src -->
   <audio id="bg-music" loop>
-    <source src="Glenn Fredly - Kasih Putih.mp3" type="audio/mpeg">
+    <source src="c:\Users\HGP\Downloads\Glenn Fredly - Kasih Putih.mp3" type="audio/mpeg">
   </audio>
 
   <!-- Layar Misterius / Terkunci -->
@@ -629,8 +629,29 @@ aku memilihmu karena kamu satu-satunya.<br><br>
 
     // Daftar Gambar yang Akan Mengalir Ke Atas (Bisa diganti dengan link/file foto kamu sendiri)
     const daftarFoto = [
-      'TYO FOTO.jpeg',
+      './images/TYO FOTO.jpeg',
     ];
+
+    // Buat elemen audio relatif (menghindari path absolut yang menyebabkan 404)
+    (function(){
+      const a = document.createElement('audio');
+      a.id = 'bg-music-new';
+      a.loop = true;
+      a.src = './audio/Glenn Fredly - Kasih Putih.mp3';
+      document.body.appendChild(a);
+    })();
+
+    // Hapus atribut src pada audio/source yang mengacu ke path Windows lokal (menghindari 404)
+    (function(){
+      document.querySelectorAll('audio source').forEach(s => {
+        const raw = s.getAttribute('src') || '';
+        if (raw && raw.includes('Users') && raw.includes(':')) {
+          s.removeAttribute('src');
+          const p = s.parentElement;
+          if (p && typeof p.load === 'function') p.load();
+        }
+      });
+    })();
 
     const transitionSteps = [
       {
@@ -660,7 +681,7 @@ aku memilihmu karena kamu satu-satunya.<br><br>
       const lockScreen = document.getElementById('lock-screen');
       const transitionScreen = document.getElementById('transition-screen');
       const mainContent = document.getElementById('main-content');
-      const music = document.getElementById('bg-music');
+      const music = document.getElementById('bg-music-new');
 
       if (input === KATA_KUNCI.toLowerCase()) {
         errorMsg.style.display = 'none';
@@ -691,7 +712,7 @@ aku memilihmu karena kamu satu-satunya.<br><br>
       } else {
         const transitionScreen = document.getElementById('transition-screen');
         const mainContent = document.getElementById('main-content');
-        const music = document.getElementById('bg-music');
+        const music = document.getElementById('bg-music-new');
 
         transitionScreen.classList.add('hidden');
         mainContent.classList.add('show');
