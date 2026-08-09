@@ -546,8 +546,10 @@
 <body>
 
   <!-- Musik Latar Belakang -->
-  <!-- Audio diset tanpa sumber agar halaman tidak memuat file yang hilang -->
-  <audio id="bg-music" loop preload="none"></audio>
+  <audio id="bg-music-new" loop preload="none" style="display:none;">
+    <source src="Glenn Fredly Kasih Putih.mp3" type="audio/mpeg">
+    Audio tidak didukung oleh browser ini.
+  </audio>
 
   <!-- Layar Misterius / Terkunci -->
   <div id="lock-screen">
@@ -629,15 +631,6 @@ aku memilihmu karena kamu satu-satunya.<br><br>
     const daftarFoto = [
       'TYO FOTO.jpeg',
     ];
-
-    // Buat elemen audio tanpa sumber untuk menghindari 404 saat file tidak ada
-    (function(){
-      const a = document.createElement('audio');
-      a.id = 'bg-music-new';
-      a.loop = true;
-      a.preload = 'none';
-      document.body.appendChild(a);
-    })();
 
     const transitionSteps = [
       {
