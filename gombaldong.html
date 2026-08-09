@@ -350,7 +350,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('./images/TYO FOTO.jpeg');
+      background-image: url('./images/placeholder-photo.svg');
       background-size: cover;
       background-position: center;
       filter: brightness(0.4) contrast(1.1);
@@ -546,10 +546,8 @@
 <body>
 
   <!-- Musik Latar Belakang -->
-  <!-- Catatan: Bisa ganti URL lagu di atribut src -->
-  <audio id="bg-music" loop>
-    <source src="c:\Users\HGP\Downloads\Glenn Fredly - Kasih Putih.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Audio diset tanpa sumber agar halaman tidak memuat file yang hilang -->
+  <audio id="bg-music" loop preload="none"></audio>
 
   <!-- Layar Misterius / Terkunci -->
   <div id="lock-screen">
@@ -627,30 +625,18 @@ aku memilihmu karena kamu satu-satunya.<br><br>
     // ==========================================
     const KATA_KUNCI = "140925"; // Ubah dengan kata kunci yang kamu mau (huruf kecil semua)
 
-    // Daftar Gambar yang Akan Mengalir Ke Atas (Bisa diganti dengan link/file foto kamu sendiri)
+    // Daftar Gambar yang Akan Mengalir Ke Atas
     const daftarFoto = [
-      './images/TYO FOTO.jpeg',
+      './images/placeholder-photo.svg',
     ];
 
-    // Buat elemen audio relatif (menghindari path absolut yang menyebabkan 404)
+    // Buat elemen audio tanpa sumber untuk menghindari 404 saat file tidak ada
     (function(){
       const a = document.createElement('audio');
       a.id = 'bg-music-new';
       a.loop = true;
-      a.src = './audio/Glenn Fredly - Kasih Putih.mp3';
+      a.preload = 'none';
       document.body.appendChild(a);
-    })();
-
-    // Hapus atribut src pada audio/source yang mengacu ke path Windows lokal (menghindari 404)
-    (function(){
-      document.querySelectorAll('audio source').forEach(s => {
-        const raw = s.getAttribute('src') || '';
-        if (raw && raw.includes('Users') && raw.includes(':')) {
-          s.removeAttribute('src');
-          const p = s.parentElement;
-          if (p && typeof p.load === 'function') p.load();
-        }
-      });
     })();
 
     const transitionSteps = [
